@@ -168,7 +168,11 @@ namespace NUnit.Framework.Constraints
 
             if (tolerance.HasVariance)
             {
-                throw new InvalidOperationException("Tolerance is not supported for this comparison");
+                // Use Comparer to handle tolerance comparison as we are looking at a range.
+                var comparer = new NUnitComparer();
+                var result = tolerance.ApplyToValue(y);
+                return comparer.Compare(x, result.LowerBound) >= 0
+                    && comparer.Compare(x, result.UpperBound) <= 0;
             }
 
             return x.Equals(y);

@@ -274,7 +274,19 @@ namespace NUnit.Framework.Constraints
                 return new Range(v - amount, v + amount);
             }
 
-            throw new InvalidOperationException("Cannot create range for a non-numeric value");
+            try
+            {
+                dynamic amount = Amount;
+                dynamic valueA = value;
+
+                var upper = valueA + amount;
+                var lower = valueA - amount;
+                return new Range(lower, upper);
+            }
+            catch
+            {
+                throw new InvalidOperationException("Cannot create range for a type without + and - operators");
+            }
         }
 
         private Range PercentRange(object value)
